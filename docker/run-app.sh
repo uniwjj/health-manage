@@ -20,9 +20,19 @@ java_opts="-server \
 -XX:+UseCMSInitiatingOccupancyOnly \
 -XX:CMSInitiatingOccupancyFraction=70"
 
-java_opts="$java_opts \
-  -Dspring.datasource.jdbc-url=$jdbc_url \
-  -Dspring.datasource.username=$db_username \
+if [ "$jdbc_url" ]; then
+  java_opts="$java_opts \
+  -Dspring.datasource.jdbc-url=$jdbc_url"
+fi
+
+if [ "$db_username" ]; then
+  java_opts="$java_opts \
+  -Dspring.datasource.username=$db_username"
+fi
+
+if [ "$db_password" ]; then
+  java_opts="$java_opts \
   -Dspring.datasource.password=$db_password"
+fi
 
 java $java_opts -jar app.jar
