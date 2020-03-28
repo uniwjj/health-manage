@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.7.RELEASE</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.beidou</groupId>
+  <artifactId>health-manage</artifactId>
+  <version>1.0.0</version>
+  <name>${project.artifactId}</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <guava.version>19.0</guava.version>
+    <joda-time.version>2.10</joda-time.version>
+    <commons-io.version>2.6</commons-io.version>
+    <commons-beanutils.version>1.9.3</commons-beanutils.version>
+    <mybatis.version>2.1.1</mybatis.version>
+
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven-dockerfile-plugin.version>1.4.9</maven-dockerfile-plugin.version>
+    <maven-antrun-plugin>1.8</maven-antrun-plugin>
+    <docker.registry>registry.cn-hangzhou.aliyuncs.com</docker.registry>
+    <docker.image.prefix>ginger</docker.image.prefix>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- guava -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+
+      <!-- 工具类 -->
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${commons-beanutils.version}</version>
+      </dependency>
+
+      <!-- mysql 相关 -->
+      <dependency>
+        <groupId>org.mybatis.spring.boot</groupId>
+        <artifactId>mybatis-spring-boot-starter</artifactId>
+        <version>${mybatis.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- web框架 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-freemarker</artifactId>
+    </dependency>
+
+    <!-- guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <!-- lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+
+    <!-- 工具类 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <!-- 各环境配置文件 -->
+      <resource>
+        <directory>src/main/resources/</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <!-- 为jar包取名 -->
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <!-- 热布署 -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.beidou.hm.HealthManageApplication</mainClass>
+          <layout>ZIP</layout>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <!--可以把依赖的包都打包到生成的Jar包中-->
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <!--默认关掉单元测试 -->
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <version>${maven-dockerfile-plugin.version}</version>
+        <configuration>
+          <!-- 是否跳过镜像构建，默认不跳过（-Ddockerfile.skip=true跳过） -->
+          <!-- <skip>true</skip>-->
+          <repository>${docker.registry}/${docker.image.prefix}/${project.artifactId}</repository>
+          <tag>${project.version}</tag>
+          <!-- 推送镜像时安全认证使用Maven Server验证 -->
+          <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+          <contextDirectory>${project.build.directory}</contextDirectory>
+          <buildArgs>
+            <jar_file>${project.build.finalName}.jar</jar_file>
+          </buildArgs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>package-phase</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+<!--            <execution>-->
+<!--              <id>deploy-phase</id>-->
+<!--              <phase>deploy</phase>-->
+<!--              <goals>-->
+<!--                <goal>push</goal>-->
+<!--              </goals>-->
+<!--            </execution>-->
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>${maven-antrun-plugin}</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <!-- 拷贝Dockerfile文件和脚本 -->
+                <copy todir="${project.build.directory}" overwrite="true">
+                  <fileset dir="${project.basedir}/docker"/>
+                </copy>
+                <!-- 拷贝日志和配置文件，用于设置镜像中的config -->
+                <copy todir="${project.build.directory}/config" overwrite="true">
+                  <fileset dir="${project.basedir}/src/main/resources">
+                    <include name="application.properties"/>
+                    <include name="logback-spring.xml"/>
+                  </fileset>
+                </copy>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

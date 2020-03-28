@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 second" debug="false">
+  <!-- 控制台日志 -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%level] [%X{REQ_ID}] %class{0}.%method:%line - %m%n</Pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <!-- info级别日志 -->
+  <appender name="HM-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>logs/hm-info.log</File>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <encoder>
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%level] [%X{REQ_ID}] %class{0}.%method:%line - %m%n</Pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/hm-info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxHistory>7</maxHistory>
+      <maxFileSize>128MB</maxFileSize>
+      <totalSizeCap>8GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="ASYNC-HM-INFO" class="ch.qos.logback.classic.AsyncAppender">
+    <discardingThreshold>0</discardingThreshold>
+    <queueSize>1024</queueSize>
+    <includeCallerData>true</includeCallerData>
+    <appender-ref ref="HM-INFO"/>
+  </appender>
+
+  <!-- TRACE日志 -->
+  <appender name="HM-TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>logs/hm-trace.log</File>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <encoder>
+      <Pattern>%m%n</Pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/hm-trace.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxHistory>7</maxHistory>
+      <maxFileSize>128MB</maxFileSize>
+      <totalSizeCap>4GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="ASYNC-HM-TRACE" class="ch.qos.logback.classic.AsyncAppender">
+    <discardingThreshold>0</discardingThreshold>
+    <queueSize>1024</queueSize>
+    <includeCallerData>true</includeCallerData>
+    <appender-ref ref="HM-TRACE"/>
+  </appender>
+
+  <!-- error级别日志 -->
+  <appender name="HM-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>logs/hm-error.log</File>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+    <encoder>
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%level] [%X{REQ_ID}] %class{0}.%method:%line - %m%n</Pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/hm-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxHistory>7</maxHistory>
+      <maxFileSize>128MB</maxFileSize>
+      <totalSizeCap>4GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <!-- 本地环境要打印的日志 -->
+  <springProfile name="local">
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.mybatis" level="INFO"/>
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+
+  <!-- 其他环境要打印的日志 -->
+  <springProfile name="!local">
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.mybatis" level="INFO"/>
+    <root level="INFO">
+      <appender-ref ref="ASYNC-HM-INFO"/>
+      <appender-ref ref="HM-ERROR"/>
+    </root>
+    <logger name="HM-TRACE"  additivity="false">
+      <appender-ref ref="ASYNC-HM-TRACE"/>
+    </logger>
+  </springProfile>
+</configuration>
