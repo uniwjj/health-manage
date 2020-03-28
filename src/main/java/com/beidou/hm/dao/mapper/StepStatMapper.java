@@ -1,6 +1,7 @@
 package com.beidou.hm.dao.mapper;
 
 import com.beidou.hm.dao.domain.StepStat;
+import com.sun.xml.internal.xsom.impl.scd.Step;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -26,8 +27,13 @@ public interface StepStatMapper {
   @Options(useGeneratedKeys = true, keyProperty = "stepStat.id", keyColumn = "id")
   int add(@Param("stepStat") StepStat stepStat);
 
-  @Update("UPDATE " + TABLE_NAME + " SET status = #{status} WHERE stat_day = #{statDay}")
-  int updateStatus(@Param("statDay") String statDay, @Param("status") Integer status);
+  @Update("UPDATE " + TABLE_NAME + " SET step_amount = #{stepStat.stepAmount}, "
+      + "stat_type = #{stepStat.statType}, step_profit = #{stepStat.stepProfit}, "
+      + "status = #{stepStat.status} WHERE stat_day = #{stepStat.statDay}")
+  int update(@Param("stepStat") StepStat stepStat);
+
+  @Select("SELECT " + ALL_COLUMN + " FROM " + TABLE_NAME + " WHERE stat_day = #{statDay}")
+  StepStat getByStatDay(@Param("statDay") String statDay);
 
   @Select("<script>"
       + "SELECT " + ALL_COLUMN + " FROM " + TABLE_NAME + " "

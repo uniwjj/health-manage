@@ -7,7 +7,7 @@ public interface StepStatService {
 
   boolean addStepStat(String statDay, int stepAccount);
 
-  boolean settleStep(String statDay);
+  boolean settleStep(String statDay, Integer statType);
 
   List<StepStat> listLastMonth();
 

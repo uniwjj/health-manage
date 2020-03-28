@@ -29,12 +29,13 @@ public class StepStatController {
   @RequestMapping("/settle")
   public String settleStep(
       @RequestParam(required = false) String statDay,
+      @RequestParam Integer statType,
       @RequestParam String password) {
-    log.info("settle step, statDay={}, password={}", statDay, password);
+    log.info("settle step, statDay={}, statType={}, password={}", statDay, statType, password);
     if (!"admin".equals(password)) {
-      return "redirect:/index";
+      throw new RuntimeException("密码不对");
     }
-    stepStatService.settleStep(statDay);
+    stepStatService.settleStep(statDay, statType);
     return "redirect:/index";
   }
 

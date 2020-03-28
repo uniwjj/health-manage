@@ -7,7 +7,15 @@
 <form name="record" action="/step/record" method="get">
   当前步数: <input type="text" name="stepAccount">&nbsp;&nbsp;<input type="submit">
 </form>
+
 <form name="record" action="/step/settle" method="get">
+  结算类型：
+  <select name="statType">
+    <option value="0">正常</option>
+    <option value="1">亲戚拜访</option>
+    <option value="2">休息</option>
+  </select>
+  &nbsp;&nbsp;
   结算密码: <input type="password" name="password">&nbsp;&nbsp;<input type="submit" value="结算">
 </form>
 </br>
@@ -46,8 +54,10 @@
         <td align='center' width='150'>${row.stepAmount!}</td>
         <#if (row.statType = 0)>
           <td align='center' width='150'>正常</td>
+        <#elseif (row.statType = 1)>
+          <td align='center' width='150'>亲戚拜访</td>
         <#else>
-          <td align='center' width='150'>来亲戚啦</td>
+          <td align='center' width='150'>休息</td>
         </#if>
         <td align='center' width='150'>${row.stepProfit!}</td>
         <#if (row.status = 0)>

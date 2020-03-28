@@ -1,5 +1,6 @@
 package com.beidou.hm.controller;
 
+import com.beidou.hm.common.constant.StepStatConstant.StatTypeEnum;
 import com.beidou.hm.dao.domain.StepStat;
 import com.beidou.hm.service.StepStatService;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
@@ -27,11 +29,18 @@ public class IndexController {
 
     List<StepStat> subList = statList.subList(0, Math.min(7, statList.size()));
     int weekStep = subList.stream().mapToInt(StepStat::getStepAmount).sum();
-    int weekProfit = subList.stream().mapToInt(StepStat::getStepProfit).sum();
+    int weekProfit = subList.stream().filter(stat -> StatTypeEnum.NORMAL.equalWith(stat.getStatType()))
+        .mapToInt(StepStat::getStepProfit).sum();
     model.addAttribute("weekStep", weekStep);
     model.addAttribute("weekProfit", weekProfit);
 
     return "index";
+  }
+
+  @RequestMapping("/error/{source}")
+  public String error(@RequestParam(required = false) String msg, Model model) {
+    model.addAttribute("msg", msg);
+    return "cerror";
   }
 
 }

@@ -11,7 +11,9 @@ public class StepStatConstant {
 
     NORMAL(0, "正常"),
 
-    MENSTRUATION(1, "来亲戚啦");
+    MENSTRUATION(1, "亲戚拜访"),
+
+    REST(2, "休息");
 
     private Integer type;
 
@@ -24,6 +26,10 @@ public class StepStatConstant {
         }
       }
       throw new RuntimeException(type + " can not be converted to StepStatConstant.TypeEnum");
+    }
+
+    public boolean equalWith(Integer type) {
+      return this.getType().equals(type);
     }
 
   }
@@ -47,6 +53,10 @@ public class StepStatConstant {
         }
       }
       throw new RuntimeException(status + " can not be converted to StepStatConstant.StatusEnum");
+    }
+
+    public boolean equalWith(Integer status) {
+      return this.getStatus().equals(status);
     }
 
   }

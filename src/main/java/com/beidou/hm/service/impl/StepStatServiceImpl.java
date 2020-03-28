@@ -1,6 +1,7 @@
 package com.beidou.hm.service.impl;
 
 import com.beidou.hm.common.constant.StepStatConstant.StatTypeEnum;
+import com.beidou.hm.common.constant.StepStatConstant.StatusEnum;
 import com.beidou.hm.dao.domain.StepStat;
 import com.beidou.hm.dao.mapper.StepStatMapper;
 import com.beidou.hm.service.StepStatService;
@@ -52,11 +53,20 @@ public class StepStatServiceImpl implements StepStatService {
   }
 
   @Override
-  public boolean settleStep(String statDay) {
+  public boolean settleStep(String statDay, Integer statType) {
     if (StringUtils.isBlank(statDay)) {
       statDay = LocalDate.now().toString();
     }
-    return 0 != stepStatMapper.updateStatus(statDay, 1);
+    StepStat stat = stepStatMapper.getByStatDay(statDay);
+    if (stat == null || StatusEnum.SETTLED.equalWith(stat.getStatus())) {
+      throw new RuntimeException("无运动信息或者已结算");
+    }
+    stat.setStatType(statType);
+    stat.setStatus(StatusEnum.SETTLED.getStatus());
+    if (!StatTypeEnum.NORMAL.equalWith(statType)) {
+      stat.setStepProfit(0);
+    }
+    return 0 != stepStatMapper.update(stat);
   }
 
   @Override
