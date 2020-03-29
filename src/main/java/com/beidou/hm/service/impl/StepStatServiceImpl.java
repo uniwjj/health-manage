@@ -46,7 +46,7 @@ public class StepStatServiceImpl implements StepStatService {
     } else if (account <= 15) {
       stepProfit = 10 + (account - 10) * 2;
     } else if (account <= 20) {
-      stepProfit = 20 + (20 - account);
+      stepProfit = 20 + (20 - 15);
     } else {
       stepProfit = 25 - (account - 20);
     }
