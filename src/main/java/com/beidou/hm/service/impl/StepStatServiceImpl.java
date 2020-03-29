@@ -44,9 +44,11 @@ public class StepStatServiceImpl implements StepStatService {
     } else if (account < 10) {
       stepProfit = -(10 - account);
     } else if (account <= 15) {
-      stepProfit = 5 + account - 10;
+      stepProfit = 10 + (account - 10) * 2;
+    } else if (account <= 20) {
+      stepProfit = 20 + (20 - account);
     } else {
-      stepProfit = 10 + (account - 15) * 2;
+      stepProfit = 25 - (account - 20);
     }
     StepStat stepStat = new StepStat(statDay, stepAccount, StatTypeEnum.NORMAL.getType(), stepProfit);
     return 0 != stepStatMapper.add(stepStat);
