@@ -4,11 +4,11 @@
 本活动主要为了女主人穿上美丽的婚纱，保持健康的身体而用，奖罚只是❤️的鞭策！
 </br></br>
 
-<form name="record" action="/step/record" method="get">
+<form name="record" action="${request.contextPath}/step/record" method="get">
   当前步数: <input type="text" name="stepAccount">&nbsp;&nbsp;<input type="submit">
 </form>
 
-<form name="record" action="/step/settle" method="get">
+<form name="record" action="${request.contextPath}/step/settle" method="get">
   结算类型：
   <select name="statType">
     <option value="0">正常</option>
@@ -16,7 +16,7 @@
     <option value="2">休息</option>
   </select>
   &nbsp;&nbsp;
-  结算密码: <input type="password" name="password">&nbsp;&nbsp;<input type="submit" value="结算">
+  <input type="submit" value="结算">
 </form>
 </br>
 

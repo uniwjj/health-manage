@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -38,8 +39,11 @@ public class IndexController {
   }
 
   @RequestMapping("/error/{source}")
-  public String error(@RequestParam(required = false) String msg, Model model) {
-    model.addAttribute("msg", msg);
+  public String errorSource(
+      @RequestParam(required = false) String msg,
+      @PathVariable String source,
+      Model model) {
+    model.addAttribute("error", source + " " + msg);
     return "cerror";
   }
 
