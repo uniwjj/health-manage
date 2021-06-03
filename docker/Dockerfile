@@ -10,11 +10,16 @@ RUN ln -snf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
 # 设置工作目录
 WORKDIR "/app"
 
-ARG jar_file
-COPY ${jar_file} app.jar
+ARG JAR_FILE
+COPY ${JAR_FILE} app.jar
 
-ARG spring_profile
-ENV spring_profile "${spring_profile}"
+ARG SPRING_PROFILE
+ENV SPRING_PROFILE "${SPRING_PROFILE}"
+
+# 管理端口
+ARG MGMT_PORT
+ENV MGMT_PORT "${MGMT_PORT}"
+EXPOSE ${MGMT_PORT}
 
 # jvm环境变量
 ENV jvm_xms "128m"

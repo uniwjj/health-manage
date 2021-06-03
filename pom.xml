@@ -21,7 +21,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <guava.version>19.0</guava.version>
     <joda-time.version>2.10</joda-time.version>
-    <commons-io.version>2.7</commons-io.version>
+    <commons-io.version>2.9.0</commons-io.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <mybatis.version>2.1.1</mybatis.version>
     <oauth2-client.version>0.31</oauth2-client.version>
@@ -89,6 +89,10 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
     <!-- guava -->
@@ -187,7 +191,8 @@
           <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
           <contextDirectory>${project.build.directory}</contextDirectory>
           <buildArgs>
-            <jar_file>${project.build.finalName}.jar</jar_file>
+            <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+            <MGMT_PORT>11521</MGMT_PORT>
           </buildArgs>
         </configuration>
         <executions>
