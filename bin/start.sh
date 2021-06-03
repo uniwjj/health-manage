@@ -38,8 +38,8 @@ STDOUT_FILE=$LOGS_DIR/stdout.log
 JAVA_OPTS=" -server -Xms64m -Xmx256m -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$LOGS_DIR/ -Xloggc:$LOGS_DIR/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=100M -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+UseCMSCompactAtFullCollection -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 "
 
 echo -e "Starting the service ...\c"
-echo "nohup $JAVA_HOME/bin/java -jar $ROOT_DIR/$JAR $JAVA_OPTS > $STDOUT_FILE 2>&1 &"
-nohup $JAVA_HOME/bin/java -jar $ROOT_DIR/$JAR $JAVA_OPTS > $STDOUT_FILE 2>&1 &
+echo "nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar $ROOT_DIR/$JAR > $STDOUT_FILE 2>&1 &"
+nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar $ROOT_DIR/$JAR > $STDOUT_FILE 2>&1 &
 
 sleep 3
 PIDS=`ps --no-heading -C java -f --width 1000 | grep "$JAR" | awk '{print $2}'`
